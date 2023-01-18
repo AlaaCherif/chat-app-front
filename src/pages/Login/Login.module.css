@@ -1,0 +1,7 @@
+.formContainer {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 100px 70px;
+  gap: 20px;
+}
