@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { login } from '../../api/auth.api';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { genKeys } from '../../services/crypto.service';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email('Email invalid'),
@@ -24,6 +25,9 @@ export default function Login() {
       const res = await login(values.email, values.password);
       if (res.status === 'success') {
         localStorage.setItem('token', res.token);
+        const keys = genKeys();
+        localStorage.setItem('publicKey', keys.publicKey);
+        localStorage.setItem('privateKey', keys.privateKey);
         navigate('/home');
       } else console.log('fuck');
     },

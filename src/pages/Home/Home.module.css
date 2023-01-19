@@ -2,9 +2,15 @@
   padding: 20px 40px;
 }
 .messageContainer {
-  margin-top: 50px;
+  margin: 20px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  background-color: rgb(162, 184, 226);
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  max-height: 600px;
+  overflow-y: scroll;
 }

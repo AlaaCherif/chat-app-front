@@ -103,7 +103,7 @@ export default function Signup() {
         <Link to='/login'> Already have an account?</Link>
       </p>
       <Button onClick={formik.handleSubmit} type='submit' variant='outlined'>
-        Login
+        Signup
       </Button>
       <ToastContainer />
     </Paper>

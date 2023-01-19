@@ -4,6 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { io } from 'socket.io-client';
 import Message from '../../components/Message';
+import {
+  decrypt,
+  encrypt,
+  genKeys,
+  getPublicKey,
+} from '../../services/crypto.service';
 import classes from './Home.module.css';
 
 export default function Home() {
@@ -13,38 +19,60 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState();
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [publicKey, setPublicKey] = useState();
+
+  const fetchPublicKey = () => {
+    getPublicKey(email).then(res => {
+      console.log(res.data);
+      setPublicKey(res.data);
+    });
+  };
+
   const emitMessage = () => {
-    socket.emit('data', message);
+    const toSend = JSON.stringify({
+      user: email,
+      data: encrypt(message, publicKey),
+    });
+    setMessages(prev => [...prev, { message, sent: true }]);
+    socket.emit('data', toSend);
   };
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
     setUser(jwtDecode(token));
+    genKeys();
   }, []);
   useEffect(() => {
-    if (buttonPressed === true) {
-      const socket = io('localhost:5001/', {
-        transports: ['websocket'],
-        cors: {
-          origin: 'http://localhost:3000/',
-        },
-      });
-      setSocket(socket);
-      socket.on('connect', data => {
-        console.log(data);
-      });
+    const socket = io('localhost:5001/', {
+      auth: {
+        token: localStorage.getItem('token'),
+        pubkey: localStorage.getItem('publicKey'),
+      },
+      transports: ['websocket'],
+      cors: {
+        origin: 'http://localhost:3000/',
+      },
+    });
+    console.log('this is hte socket', socket);
+    setSocket(socket);
+    socket.on('connect', data => {
+      console.log(data);
+    });
 
-      socket.on('disconnect', data => {
-        console.log(data);
-      });
-      socket.on('data', data => {
-        setMessages(prev => [...prev, data]);
-      });
-      return function cleanup() {
-        socket.disconnect();
-      };
-    }
-  }, [buttonPressed]);
+    socket.on('disconnect', data => {
+      console.log(data);
+    });
+    socket.on('data', data => {
+      setMessages(prev => [
+        ...prev,
+        { message: decrypt(data.data), sent: false },
+      ]);
+    });
+    return function cleanup() {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <Paper
@@ -60,30 +88,40 @@ export default function Home() {
           label='email'
           palceholder='friend@email.insat'
           variant='filled'
+          value={email}
+          onChange={e => setEmail(e.target.value)}
         />
-        <Button
-          onClick={() => setbuttonPressed(prev => true)}
-          color='secondary'
-        >
+        <Button onClick={fetchPublicKey} color='secondary'>
           Chat !
         </Button>
       </div>
-      <div className={classes.messageContainer}>
-        {messages &&
-          messages.map(item => <Message key={Math.random()} message={item} />)}
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <TextField
-          label='Message'
-          palceholder='friend@email.insat'
-          variant='filled'
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-        />
-        <Button onClick={emitMessage} color='secondary'>
-          Send Message
-        </Button>
-      </div>
+      {messages && messages.length > 0 && (
+        <div className={classes.messageContainer}>
+          {messages.map(item => (
+            <Message key={Math.random()} message={item} />
+          ))}
+        </div>
+      )}
+      {publicKey && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <TextField
+            label='Message'
+            palceholder='friend@email.insat'
+            variant='filled'
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+          />
+          <Button onClick={emitMessage} color='secondary'>
+            Send Message
+          </Button>
+        </div>
+      )}
     </Paper>
   );
 }
