@@ -11,6 +11,11 @@
   padding: 20px 30px;
   border-radius: 15px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  max-height: 600px;
+  max-height: 50vh;
   overflow-y: scroll;
+}
+.actionContainer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }

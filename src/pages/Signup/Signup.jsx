@@ -105,7 +105,7 @@ export default function Signup() {
       <Button onClick={formik.handleSubmit} type='submit' variant='outlined'>
         Signup
       </Button>
-      <ToastContainer />
+      <ToastContainer theme='dark' />
     </Paper>
   );
 }
