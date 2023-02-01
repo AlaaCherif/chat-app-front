@@ -24,7 +24,7 @@ export const singup = async (email, password, firstName, lastName, id) => {
   let result = null;
   axios
     .post(`${url}signup`, {
-      email,
+      usrname: email,
       password,
       firstname: firstName,
       lastname: lastName,

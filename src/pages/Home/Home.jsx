@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 import { LogOutOutline, SwapHorizontalOutline } from 'react-ionicons';
 import Message from '../../components/Message';
 import {
+  createCsr,
   decrypt,
   encrypt,
   genKeys,
@@ -58,7 +59,7 @@ export default function Home() {
     const socket = io('localhost:5001/', {
       auth: {
         token: localStorage.getItem('token'),
-        pubkey: localStorage.getItem('publicKey'),
+        csr: createCsr(jwtDecode(localStorage.getItem('token')).user),
       },
       transports: ['websocket'],
       cors: {
