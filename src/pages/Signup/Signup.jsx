@@ -1,31 +1,31 @@
-import { Button, Paper, TextField } from '@mui/material';
-import { useFormik } from 'formik';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import * as Yup from 'yup';
-import { singup } from '../../api/auth.api';
-import classes from './Signup.module.css';
+import { Button, Paper, TextField } from "@mui/material";
+import { useFormik } from "formik";
+import React from "react";
+import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import * as Yup from "yup";
+import { singup } from "../../api/auth.api";
+import classes from "./Signup.module.css";
 
 const signupSchema = Yup.object().shape({
   id: Yup.string(),
   firstName: Yup.string(),
   lastName: Yup.string(),
-  email: Yup.string().email('Email invalid'),
-  password: Yup.string().min(4, 'Password too short'),
+  email: Yup.string(),
+  password: Yup.string().min(4, "Password too short"),
 });
 
 export default function Signup() {
   const formik = useFormik({
     initialValues: {
-      id: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
+      id: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
     },
     validationSchema: signupSchema,
-    onSubmit: values => {
+    onSubmit: (values) => {
       singup(
         values.email,
         values.password,
@@ -39,11 +39,11 @@ export default function Signup() {
     <Paper className={classes.formContainer} style={{}} elevation={3}>
       <h1>Signup</h1>
       <TextField
-        name='email'
-        id='email'
-        type='email'
-        label='Email'
-        variant='filled'
+        name="email"
+        id="email"
+        type="email"
+        label="Email"
+        variant="filled"
         value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -52,11 +52,11 @@ export default function Signup() {
       />
 
       <TextField
-        id='id'
-        name='id'
-        type='text'
-        label='Student card ID'
-        variant='filled'
+        id="id"
+        name="id"
+        type="text"
+        label="Student card ID"
+        variant="filled"
         value={formik.values.id}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -64,11 +64,11 @@ export default function Signup() {
         helperText={formik.touched.id && formik.errors.id}
       />
       <TextField
-        name='firstName'
-        id='firstName'
-        type='text'
-        label='First Name'
-        variant='filled'
+        name="firstName"
+        id="firstName"
+        type="text"
+        label="First Name"
+        variant="filled"
         value={formik.values.firstName}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -76,11 +76,11 @@ export default function Signup() {
         helperText={formik.touched.firstName && formik.errors.firstName}
       />
       <TextField
-        name='lastName'
-        id='lastName'
-        type='text'
-        label='Last Name'
-        variant='filled'
+        name="lastName"
+        id="lastName"
+        type="text"
+        label="Last Name"
+        variant="filled"
         value={formik.values.lastName}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -88,24 +88,24 @@ export default function Signup() {
         helperText={formik.touched.lastName && formik.errors.lastName}
       />
       <TextField
-        name='password'
-        id='password'
-        type='password'
-        label='Password'
-        variant='filled'
+        name="password"
+        id="password"
+        type="password"
+        label="Password"
+        variant="filled"
         value={formik.values.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         error={formik.touched.password && Boolean(formik.errors.password)}
         helperText={formik.touched.password && formik.errors.password}
       />
-      <p style={{ textAlign: 'start' }}>
-        <Link to='/login'> Already have an account?</Link>
+      <p style={{ textAlign: "start" }}>
+        <Link to="/login"> Already have an account?</Link>
       </p>
-      <Button onClick={formik.handleSubmit} type='submit' variant='outlined'>
+      <Button onClick={formik.handleSubmit} type="submit" variant="outlined">
         Signup
       </Button>
-      <ToastContainer theme='dark' />
+      <ToastContainer theme="dark" />
     </Paper>
   );
 }
